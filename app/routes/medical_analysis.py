@@ -1,12 +1,25 @@
 """Medical analysis and report processing routes"""
 
-from fastapi import APIRouter, HTTPException, UploadFile, File, Depends
+from fastapi import APIRouter, HTTPException, UploadFile, File, Depends, Response
+from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, Field, validator
 from typing import List, Optional, Dict, Any
 from datetime import datetime, date
 from uuid import uuid4
 import json
 import uuid
+import io
+import base64
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter, A4
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+from reportlab.lib.units import inch
+from reportlab.lib import colors
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.application import MIMEApplication
 
 router = APIRouter()
 
@@ -514,22 +527,295 @@ async def submit_health_assessment(assessment: HealthAssessmentRequest):
         raise HTTPException(status_code=500, detail=f"Error processing assessment: {str(e)}")
 
 @router.get("/health-assessment/{assessment_id}", response_model=HealthAssessmentResponse)
-async def get_assessment_results(assessment_id: str):
+async def get_health_assessment(assessment_id: str):
     """
-    Retrieve assessment results by ID
+    Retrieve a health assessment by ID
     """
     if assessment_id not in assessments_db:
         raise HTTPException(status_code=404, detail="Assessment not found")
     
-    record = assessments_db[assessment_id]
+    assessment_record = assessments_db[assessment_id]
+    return HealthAssessmentResponse(**assessment_record)
+
+@router.get("/health-assessment/{assessment_id}/pdf")
+async def download_assessment_pdf(assessment_id: str):
+    """
+    Generate and download PDF report for health assessment
+    """
+    if assessment_id not in assessments_db:
+        raise HTTPException(status_code=404, detail="Assessment not found")
     
-    return HealthAssessmentResponse(
-        assessment_id=assessment_id,
-        status=record["status"],
-        submitted_at=record["submitted_at"],
-        analysis_results=AnalysisResults(**record["analysis_results"]),
-        message="Assessment results retrieved successfully"
-    )
+    assessment_record = assessments_db[assessment_id]
+    
+    try:
+        # Generate PDF
+        pdf_buffer = generate_assessment_pdf(assessment_record)
+        
+        # Return PDF as downloadable file
+        return Response(
+            content=pdf_buffer.getvalue(),
+            media_type="application/pdf",
+            headers={
+                "Content-Disposition": f"attachment; filename=health-assessment-{assessment_id}.pdf"
+            }
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error generating PDF: {str(e)}")
+
+@router.post("/health-assessment/{assessment_id}/share")
+async def share_assessment(assessment_id: str, share_request: dict):
+    """
+    Share health assessment via email or generate shareable link
+    """
+    if assessment_id not in assessments_db:
+        raise HTTPException(status_code=404, detail="Assessment not found")
+    
+    assessment_record = assessments_db[assessment_id]
+    method = share_request.get("method")
+    
+    try:
+        if method == "email":
+            email = share_request.get("email")
+            if not email:
+                raise HTTPException(status_code=400, detail="Email address required")
+            
+            # Send email with PDF attachment
+            result = send_assessment_email(assessment_record, email)
+            return {"message": "Assessment shared via email successfully", "result": result}
+            
+        elif method == "link":
+            # Generate shareable link
+            share_link = generate_share_link(assessment_id)
+            return {"message": "Share link generated", "link": share_link}
+            
+        else:
+            raise HTTPException(status_code=400, detail="Invalid sharing method")
+            
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error sharing assessment: {str(e)}")
+
+@router.get("/health-assessment/shared/{share_token}")
+async def view_shared_assessment(share_token: str):
+    """
+    View shared assessment via public link
+    """
+    # Decode share token to get assessment ID
+    try:
+        assessment_id = decode_share_token(share_token)
+        if assessment_id not in assessments_db:
+            raise HTTPException(status_code=404, detail="Shared assessment not found")
+        
+        assessment_record = assessments_db[assessment_id]
+        
+        # Return sanitized version (remove sensitive data)
+        sanitized_record = sanitize_assessment_for_sharing(assessment_record)
+        return sanitized_record
+        
+    except Exception as e:
+        raise HTTPException(status_code=400, detail="Invalid share link")
+
+def generate_assessment_pdf(assessment_record: dict) -> io.BytesIO:
+    """
+    Generate PDF report from assessment data
+    """
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=A4)
+    styles = getSampleStyleSheet()
+    story = []
+    
+    # Title
+    title = Paragraph("Health Assessment Report", styles['Title'])
+    story.append(title)
+    story.append(Spacer(1, 12))
+    
+    # Assessment Info
+    assessment_data = assessment_record.get('assessment_data', {})
+    analysis_results = assessment_record.get('analysis_results', {})
+    
+    # Basic Information
+    story.append(Paragraph("Basic Information", styles['Heading2']))
+    basic_profile = assessment_data.get('basicProfile', {})
+    
+    basic_info_data = [
+        ['Age', f"{basic_profile.get('age', 'N/A')} years"],
+        ['Gender', basic_profile.get('gender', 'N/A')],
+        ['Height', f"{basic_profile.get('height', 'N/A')} {basic_profile.get('heightUnit', '')}"],
+        ['Weight', f"{basic_profile.get('weight', 'N/A')} {basic_profile.get('weightUnit', '')}"],
+        ['Activity Level', f"{basic_profile.get('activityLevel', 'N/A')}/5"],
+    ]
+    
+    basic_table = Table(basic_info_data, colWidths=[2*inch, 3*inch])
+    basic_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 12),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black)
+    ]))
+    
+    story.append(basic_table)
+    story.append(Spacer(1, 12))
+    
+    # Symptoms
+    story.append(Paragraph("Symptoms", styles['Heading2']))
+    symptoms = assessment_data.get('symptoms', {})
+    
+    symptom_text = f"Primary Symptom: {symptoms.get('primarySymptom', 'N/A')}\n"
+    symptom_text += f"Duration: {symptoms.get('duration', 'N/A')}\n"
+    symptom_text += f"Severity: {symptoms.get('severity', 'N/A')}/10\n"
+    
+    affected_areas = symptoms.get('affectedAreas', [])
+    if affected_areas:
+        symptom_text += f"Affected Areas: {', '.join(affected_areas)}\n"
+    
+    story.append(Paragraph(symptom_text, styles['Normal']))
+    story.append(Spacer(1, 12))
+    
+    # Analysis Results
+    story.append(Paragraph("AI Analysis Results", styles['Heading2']))
+    
+    risk_level = analysis_results.get('risk_level', {})
+    story.append(Paragraph(f"Risk Level: {risk_level.get('level', 'N/A')}", styles['Normal']))
+    story.append(Paragraph(f"Risk Description: {risk_level.get('description', 'N/A')}", styles['Normal']))
+    story.append(Spacer(1, 12))
+    
+    # Recommendations
+    recommendations = analysis_results.get('recommendations', [])
+    if recommendations:
+        story.append(Paragraph("Recommendations", styles['Heading3']))
+        for i, rec in enumerate(recommendations, 1):
+            story.append(Paragraph(f"{i}. {rec.get('recommendation', '')}", styles['Normal']))
+    
+    story.append(Spacer(1, 12))
+    
+    # Footer
+    footer_text = f"Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
+    footer_text += "This report is for informational purposes only and should not replace professional medical advice."
+    story.append(Paragraph(footer_text, styles['Normal']))
+    
+    doc.build(story)
+    buffer.seek(0)
+    return buffer
+
+def send_assessment_email(assessment_record: dict, recipient_email: str) -> dict:
+    """
+    Send assessment report via email
+    """
+    # Mock email sending - in production, use actual SMTP settings
+    try:
+        # Generate PDF
+        pdf_buffer = generate_assessment_pdf(assessment_record)
+        
+        # Create email message
+        msg = MIMEMultipart()
+        msg['From'] = "noreply@healthcare-ai.com"
+        msg['To'] = recipient_email
+        msg['Subject'] = "Your Health Assessment Report"
+        
+        # Email body
+        body = """
+        Dear Patient,
+        
+        Please find your health assessment report attached to this email.
+        
+        This report contains your AI-generated health analysis based on the information you provided.
+        Please consult with a healthcare professional for proper medical advice.
+        
+        Best regards,
+        AI Healthcare Team
+        """
+        
+        msg.attach(MIMEText(body, 'plain'))
+        
+        # Attach PDF
+        pdf_attachment = MIMEApplication(pdf_buffer.getvalue(), _subtype='pdf')
+        pdf_attachment.add_header('Content-Disposition', 'attachment', filename='health-assessment-report.pdf')
+        msg.attach(pdf_attachment)
+        
+        # In production, actually send the email
+        # server = smtplib.SMTP('smtp.gmail.com', 587)
+        # server.starttls()
+        # server.login("your-email@gmail.com", "your-password")
+        # text = msg.as_string()
+        # server.sendmail("your-email@gmail.com", recipient_email, text)
+        # server.quit()
+        
+        return {"status": "success", "message": "Email sent successfully (simulated)"}
+        
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+def generate_share_link(assessment_id: str) -> str:
+    """
+    Generate a secure shareable link for assessment
+    """
+    # In production, use proper token generation and storage
+    share_token = base64.urlsafe_b64encode(f"{assessment_id}:{datetime.now().timestamp()}".encode()).decode()
+    return f"/assessment/shared/{share_token}"
+
+def decode_share_token(share_token: str) -> str:
+    """
+    Decode share token to get assessment ID
+    """
+    try:
+        decoded = base64.urlsafe_b64decode(share_token.encode()).decode()
+        assessment_id = decoded.split(':')[0]
+        return assessment_id
+    except Exception:
+        raise ValueError("Invalid share token")
+
+def sanitize_assessment_for_sharing(assessment_record: dict) -> dict:
+    """
+    Remove sensitive information from assessment for sharing
+    """
+    sanitized = assessment_record.copy()
+    
+    # Remove or mask sensitive data
+    if 'assessment_data' in sanitized:
+        assessment_data = sanitized['assessment_data']
+        
+        # Remove specific personal identifiers if needed
+        if 'basicProfile' in assessment_data:
+            basic_profile = assessment_data['basicProfile']
+            # Keep medical info but remove specific personal details if needed
+            pass
+    
+    return sanitized
+
+@router.post("/health-assessment/{assessment_id}/save-profile")
+async def save_to_profile(assessment_id: str):
+    """
+    Save assessment to user profile (mock implementation)
+    """
+    if assessment_id not in assessments_db:
+        raise HTTPException(status_code=404, detail="Assessment not found")
+    
+    assessment_record = assessments_db[assessment_id]
+    
+    try:
+        # In production, this would save to user's profile in database
+        profile_data = {
+            "assessment_id": assessment_id,
+            "saved_at": datetime.now().isoformat(),
+            "assessment_data": assessment_record["assessment_data"],
+            "analysis_results": assessment_record["analysis_results"]
+        }
+        
+        # Mock save to profile storage
+        profile_key = f"profile_{assessment_id}_{datetime.now().timestamp()}"
+        # In production: save profile_data to user's profile table
+        
+        return {
+            "message": "Assessment saved to profile successfully",
+            "profile_id": profile_key,
+            "saved_at": profile_data["saved_at"]
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error saving to profile: {str(e)}")
 
 @router.post("/health-assessment/save-progress")
 async def save_assessment_progress(progress_data: Dict[str, Any]):

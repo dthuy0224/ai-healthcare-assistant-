@@ -69,26 +69,53 @@
             </div>
         </nav>
 
-        <!-- Save Progress -->
+        <!-- Enhanced Save Progress -->
         <div class="save-progress">
-            <div class="auto-save-indicator">
-                <div class="save-icon">💾</div>
-                <span class="save-status">Auto-saved just now</span>
+            <div class="auto-save-indicator" id="auto-save-indicator">
+                <div class="save-icon" id="save-icon">💾</div>
+                <div class="save-details">
+                    <span class="save-status" id="save-status">Auto-saved</span>
+                    <span class="save-time" id="save-time">just now</span>
+                </div>
             </div>
-            <button class="btn-save-exit">Save & Exit</button>
+            <button class="btn-save-exit" id="save-exit-btn" onclick="saveAndExit()">
+                <span class="btn-icon">💾</span>
+                Save & Exit
+            </button>
         </div>
     </div>
 
     <!-- Main Assessment Content -->
     <div class="assessment-main">
-        <!-- Progress Bar -->
+        <!-- Enhanced Progress Bar -->
         <div class="assessment-progress">
-            <div class="progress-track">
-                <div class="progress-fill" style="width: 25%"></div>
+            <div class="progress-header">
+                <h2 class="progress-title">Health Assessment Progress</h2>
+                <div class="progress-stats">
+                    <span class="current-step">Step <span id="progress-step">1</span> of 4</span>
+                    <span class="completion-rate"><span id="progress-percentage">25</span>% Complete</span>
+                </div>
             </div>
-            <div class="progress-text">
-                <span class="current-step">Step 1 of 4</span>
-                <span class="completion-rate">25% Complete</span>
+            <div class="progress-track">
+                <div class="progress-fill" id="main-progress-fill" style="width: 25%"></div>
+                <div class="progress-steps">
+                    <div class="progress-step active" data-step="1">
+                        <div class="step-dot"></div>
+                        <span class="step-label">Profile</span>
+                    </div>
+                    <div class="progress-step" data-step="2">
+                        <div class="step-dot"></div>
+                        <span class="step-label">Symptoms</span>
+                    </div>
+                    <div class="progress-step" data-step="3">
+                        <div class="step-dot"></div>
+                        <span class="step-label">Context</span>
+                    </div>
+                    <div class="progress-step" data-step="4">
+                        <div class="step-dot"></div>
+                        <span class="step-label">Analysis</span>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -126,38 +153,70 @@
                         </div>
                     </div>
 
-                    <!-- Gender Selection -->
+                    <!-- Enhanced Gender Selection -->
                     <div class="form-section">
                         <label class="section-label">Gender Identity</label>
+                        <p class="section-description">Select the option that best describes you</p>
                         <div class="gender-options">
                             <div class="gender-option">
-                                <input type="radio" id="male" name="gender" value="male">
+                                <input type="radio" id="male" name="gender" value="male" aria-describedby="male-desc">
                                 <label for="male" class="gender-card">
                                     <div class="gender-icon">♂️</div>
                                     <span>Male</span>
+                                    <small id="male-desc">Identifies as male</small>
                                 </label>
                             </div>
                             <div class="gender-option">
-                                <input type="radio" id="female" name="gender" value="female">
+                                <input type="radio" id="female" name="gender" value="female" aria-describedby="female-desc">
                                 <label for="female" class="gender-card">
                                     <div class="gender-icon">♀️</div>
                                     <span>Female</span>
+                                    <small id="female-desc">Identifies as female</small>
                                 </label>
                             </div>
                             <div class="gender-option">
-                                <input type="radio" id="non-binary" name="gender" value="non-binary">
+                                <input type="radio" id="non-binary" name="gender" value="non-binary" aria-describedby="non-binary-desc">
                                 <label for="non-binary" class="gender-card">
                                     <div class="gender-icon">⚧️</div>
                                     <span>Non-binary</span>
+                                    <small id="non-binary-desc">Gender identity outside male/female</small>
                                 </label>
                             </div>
                             <div class="gender-option">
-                                <input type="radio" id="prefer-not-to-say" name="gender" value="prefer-not-to-say">
-                                <label for="prefer-not-to-say" class="gender-card">
-                                    <div class="gender-icon">❓</div>
-                                    <span>Prefer not to say</span>
+                                <input type="radio" id="transgender" name="gender" value="transgender" aria-describedby="transgender-desc">
+                                <label for="transgender" class="gender-card">
+                                    <div class="gender-icon">🏳️‍⚧️</div>
+                                    <span>Transgender</span>
+                                    <small id="transgender-desc">Gender different from birth assignment</small>
                                 </label>
                             </div>
+                            <div class="gender-option">
+                                <input type="radio" id="genderfluid" name="gender" value="genderfluid" aria-describedby="genderfluid-desc">
+                                <label for="genderfluid" class="gender-card">
+                                    <div class="gender-icon">🌊</div>
+                                    <span>Genderfluid</span>
+                                    <small id="genderfluid-desc">Gender identity varies over time</small>
+                                </label>
+                            </div>
+                            <div class="gender-option">
+                                <input type="radio" id="other-gender" name="gender" value="other" aria-describedby="other-gender-desc">
+                                <label for="other-gender" class="gender-card">
+                                    <div class="gender-icon">✨</div>
+                                    <span>Other</span>
+                                    <small id="other-gender-desc">Self-describe your gender identity</small>
+                                </label>
+                            </div>
+                            <div class="gender-option">
+                                <input type="radio" id="prefer-not-to-say" name="gender" value="prefer-not-to-say" aria-describedby="prefer-not-desc">
+                                <label for="prefer-not-to-say" class="gender-card">
+                                    <div class="gender-icon">🤐</div>
+                                    <span>Prefer not to say</span>
+                                    <small id="prefer-not-desc">Keep gender identity private</small>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="gender-custom" id="gender-custom" style="display: none;">
+                            <input type="text" id="custom-gender" placeholder="Please specify your gender identity..." maxlength="50" aria-label="Custom gender identity">
                         </div>
                     </div>
 
@@ -870,7 +929,7 @@
                         <!-- Recommendations -->
                         <div class="recommendations-section">
                             <h3>Recommended Next Steps</h3>
-                            <div class="recommendations-list">
+                            <div class="recommendations-list" id="recommendations-list">
                                 <div class="recommendation urgent">
                                     <div class="rec-priority">🚨</div>
                                     <div class="rec-content">
@@ -891,6 +950,41 @@
                                         <h4>General Care</h4>
                                         <p>Rest, stay hydrated, and avoid strenuous activities.</p>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="results-actions">
+                            <div class="action-buttons">
+                                <button type="button" class="action-btn primary" id="download-pdf-btn">
+                                    <span class="btn-icon">📄</span>
+                                    Download PDF Report
+                                </button>
+                                <button type="button" class="action-btn secondary" id="share-doctor-btn">
+                                    <span class="btn-icon">👩‍⚕️</span>
+                                    Share with Doctor
+                                </button>
+                                <button type="button" class="action-btn tertiary" id="save-to-profile-btn">
+                                    <span class="btn-icon">💾</span>
+                                    Save to Profile
+                                </button>
+                            </div>
+                            <div class="sharing-options" id="sharing-options" style="display: none;">
+                                <h4>Share Options</h4>
+                                <div class="share-methods">
+                                    <button type="button" class="share-btn" data-method="email">
+                                        <span class="share-icon">📧</span>
+                                        Email to Doctor
+                                    </button>
+                                    <button type="button" class="share-btn" data-method="link">
+                                        <span class="share-icon">🔗</span>
+                                        Copy Share Link
+                                    </button>
+                                    <button type="button" class="share-btn" data-method="print">
+                                        <span class="share-icon">🖨️</span>
+                                        Print Report
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -925,7 +1019,5 @@
 {% endblock %}
 
 {% block js %}
-<script src="/static/js/assessment.js"></script>
-<script src="/static/js/assessment-interface.js"></script>
-<script src="/static/js/assessment-steps.js"></script>
+<script src="/static/js/enhanced-assessment.js"></script>
 {% endblock %}
