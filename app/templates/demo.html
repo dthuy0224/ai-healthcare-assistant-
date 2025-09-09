@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Demo - AI Health Care Assistant{% endblock %}
+
+{% block description %}Watch our AI Health Care Assistant in action with interactive demos and examples{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="/static/css/demo.css">
+{% endblock %}
+
+{% block content %}
+<!-- Demo Page -->
+<section class="demo-hero py-12 lg:py-16">
+    <div class="container">
+        <div class="text-center mb-12">
+            <h1 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+                AI Health Assistant Demo
+            </h1>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                Experience the power of AI-driven healthcare with our interactive demonstrations
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            <!-- Demo Video/Content -->
+            <div class="demo-content">
+                <div class="demo-placeholder">
+                    <div class="demo-icon">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M8 5v14l11-7z"/>
+                        </svg>
+                    </div>
+                    <h3>Interactive Demo Coming Soon</h3>
+                    <p>We're preparing an amazing interactive demo to showcase our AI capabilities</p>
+                </div>
+            </div>
+
+            <!-- Demo Features -->
+            <div class="demo-features">
+                <div class="feature-item">
+                    <div class="feature-icon">🤖</div>
+                    <div class="feature-content">
+                        <h4>AI Symptom Analysis</h4>
+                        <p>Watch how our AI analyzes symptoms and provides instant insights</p>
+                    </div>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="feature-icon">📊</div>
+                    <div class="feature-content">
+                        <h4>Health Dashboard</h4>
+                        <p>Explore personalized health tracking and monitoring features</p>
+                    </div>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="feature-icon">💬</div>
+                    <div class="feature-content">
+                        <h4>AI Chat Assistant</h4>
+                        <p>Experience natural conversations with our medical AI</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-12">
+            <a href="/assessment/start" class="btn btn-primary text-lg px-8 py-4">
+                Try It Yourself
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block js %}
+<script src="/static/js/demo.js"></script>
+{% endblock %}

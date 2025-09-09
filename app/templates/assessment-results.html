@@ -1,0 +1,603 @@
+{% extends "base.html" %}
+
+{% block title %}Assessment Results - AI Health Care Assistant{% endblock %}
+
+{% block description %}Kết quả đánh giá sức khỏe chi tiết với AI insights và khuyến nghị cá nhân hóa{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="/static/css/assessment-results.css">
+<link rel="stylesheet" href="/static/css/results-interface.css">
+<link rel="stylesheet" href="/static/css/results-components.css">
+{% endblock %}
+
+{% block content %}
+<div class="results-dashboard">
+    <!-- TOP SUMMARY CARD -->
+    <div class="summary-card">
+        <div class="summary-content">
+            <div class="score-section">
+                <div class="circular-progress">
+                    <svg class="progress-ring" viewBox="0 0 100 100">
+                        <circle class="progress-ring-bg" cx="50" cy="50" r="45" fill="none" stroke="var(--gray-200)" stroke-width="8"/>
+                        <circle class="progress-ring-fill" cx="50" cy="50" r="45" fill="none" stroke="url(#healthGradient)" stroke-width="8" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="62"/>
+                        <defs>
+                            <linearGradient id="healthGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+                                <stop offset="50%" style="stop-color:#f59e0b;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#ef4444;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <div class="score-display">
+                        <span class="score-number">78</span>
+                        <span class="score-total">/100</span>
+                    </div>
+                </div>
+                <div class="score-info">
+                    <h2 class="score-title">Overall Health Score</h2>
+                    <p class="score-subtitle">Good</p>
+                </div>
+            </div>
+            
+            <div class="risk-section">
+                <div class="risk-badge risk-medium">
+                    <div class="risk-pulse"></div>
+                    <svg class="risk-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C13.1 2 14 2.9 14 4V10H20C21.1 10 22 10.9 22 12C22 13.1 21.1 14 20 14H14V20C14 21.1 13.1 22 12 22C10.9 22 10 21.1 10 20V14H4C2.9 14 2 13.1 2 12C2 10.9 2.9 10 4 10H10V4C10 2.9 10.9 2 12 2Z"/>
+                    </svg>
+                    <span class="risk-text">Medium Risk</span>
+                </div>
+            </div>
+            
+            <div class="meta-section">
+                <div class="assessment-date">
+                    <svg class="date-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    <span>Completed: March 15, 2024 at 2:30 PM</span>
+                </div>
+                <div class="assessment-id">
+                    <svg class="id-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+                    </svg>
+                    <span>ID: #ASS-2024-0315-001</span>
+                </div>
+            </div>
+            
+            <div class="action-section">
+                <button class="btn btn-primary btn-share" onclick="shareWithDoctor()">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"/>
+                    </svg>
+                    Share with Doctor
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MIDDLE SECTION: DETAILED ANALYSIS -->
+    <div class="analysis-sections">
+        <!-- 1. SYMPTOM ANALYSIS CARD -->
+        <div class="analysis-card symptom-analysis">
+            <div class="card-header">
+                <div class="card-title">
+                    <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <h3>Symptom Analysis</h3>
+                </div>
+                <button class="expand-toggle" onclick="toggleCard(this)">
+                    <svg class="expand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="card-content">
+                <div class="primary-concerns">
+                    <h4>Primary Concerns Identified</h4>
+                    <div class="concern-list">
+                        <div class="concern-item">
+                            <div class="concern-icon">🫁</div>
+                            <div class="concern-details">
+                                <span class="concern-name">Respiratory Issues</span>
+                                <div class="severity-bar">
+                                    <div class="severity-fill severity-medium" style="width: 70%;"></div>
+                                </div>
+                                <span class="severity-text">Moderate</span>
+                            </div>
+                        </div>
+                        <div class="concern-item">
+                            <div class="concern-icon">💪</div>
+                            <div class="concern-details">
+                                <span class="concern-name">Muscle Fatigue</span>
+                                <div class="severity-bar">
+                                    <div class="severity-fill severity-low" style="width: 40%;"></div>
+                                </div>
+                                <span class="severity-text">Mild</span>
+                            </div>
+                        </div>
+                        <div class="concern-item">
+                            <div class="concern-icon">🧠</div>
+                            <div class="concern-details">
+                                <span class="concern-name">Cognitive Changes</span>
+                                <div class="severity-bar">
+                                    <div class="severity-fill severity-high" style="width: 85%;"></div>
+                                </div>
+                                <span class="severity-text">Severe</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="potential-conditions">
+                    <h4>Potential Conditions</h4>
+                    <div class="condition-list">
+                        <div class="condition-item">
+                            <div class="condition-rank">1</div>
+                            <div class="condition-details">
+                                <span class="condition-name">Viral Upper Respiratory Infection</span>
+                                <div class="condition-tags">
+                                    <span class="tag tag-common">Common</span>
+                                    <span class="tag tag-non-serious">Non-serious</span>
+                                </div>
+                            </div>
+                            <div class="confidence-meter">
+                                <svg class="confidence-ring" viewBox="0 0 40 40">
+                                    <circle class="confidence-bg" cx="20" cy="20" r="16" fill="none" stroke="var(--gray-200)" stroke-width="3"/>
+                                    <circle class="confidence-fill" cx="20" cy="20" r="16" fill="none" stroke="var(--success)" stroke-width="3" stroke-linecap="round" stroke-dasharray="100" stroke-dashoffset="25"/>
+                                </svg>
+                                <span class="confidence-percentage">75%</span>
+                                <span class="confidence-label">High</span>
+                            </div>
+                        </div>
+                        <div class="condition-item">
+                            <div class="condition-rank">2</div>
+                            <div class="condition-details">
+                                <span class="condition-name">Seasonal Allergies</span>
+                                <div class="condition-tags">
+                                    <span class="tag tag-common">Common</span>
+                                    <span class="tag tag-chronic">Chronic</span>
+                                </div>
+                            </div>
+                            <div class="confidence-meter">
+                                <svg class="confidence-ring" viewBox="0 0 40 40">
+                                    <circle class="confidence-bg" cx="20" cy="20" r="16" fill="none" stroke="var(--gray-200)" stroke-width="3"/>
+                                    <circle class="confidence-fill" cx="20" cy="20" r="16" fill="none" stroke="var(--warning)" stroke-width="3" stroke-linecap="round" stroke-dasharray="100" stroke-dashoffset="50"/>
+                                </svg>
+                                <span class="confidence-percentage">50%</span>
+                                <span class="confidence-label">Medium</span>
+                            </div>
+                        </div>
+                        <div class="condition-item">
+                            <div class="condition-rank">3</div>
+                            <div class="condition-details">
+                                <span class="condition-name">Stress-Related Symptoms</span>
+                                <div class="condition-tags">
+                                    <span class="tag tag-psychological">Psychological</span>
+                                </div>
+                            </div>
+                            <div class="confidence-meter">
+                                <svg class="confidence-ring" viewBox="0 0 40 40">
+                                    <circle class="confidence-bg" cx="20" cy="20" r="16" fill="none" stroke="var(--gray-200)" stroke-width="3"/>
+                                    <circle class="confidence-fill" cx="20" cy="20" r="16" fill="none" stroke="var(--info)" stroke-width="3" stroke-linecap="round" stroke-dasharray="100" stroke-dashoffset="70"/>
+                                </svg>
+                                <span class="confidence-percentage">30%</span>
+                                <span class="confidence-label">Low</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="medical-disclaimer">
+                        <svg class="disclaimer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span>This analysis is for informational purposes only and should not replace professional medical advice.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. RECOMMENDED ACTIONS CARD -->
+        <div class="analysis-card recommended-actions">
+            <div class="card-header">
+                <div class="card-title">
+                    <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+                    </svg>
+                    <h3>Recommended Actions</h3>
+                </div>
+                <button class="expand-toggle" onclick="toggleCard(this)">
+                    <svg class="expand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="card-content">
+                <div class="immediate-actions">
+                    <h4>Immediate Actions</h4>
+                    <div class="action-list">
+                        <div class="action-item action-urgent">
+                            <div class="action-icon">🚨</div>
+                            <div class="action-details">
+                                <span class="action-title">Monitor Breathing</span>
+                                <span class="action-description">Watch for any worsening of respiratory symptoms</span>
+                                <span class="action-timeframe">Within 24 hours</span>
+                            </div>
+                        </div>
+                        <div class="action-item action-important">
+                            <div class="action-icon">💊</div>
+                            <div class="action-details">
+                                <span class="action-title">Over-the-counter Relief</span>
+                                <span class="action-description">Consider antihistamines for allergy symptoms</span>
+                                <span class="action-timeframe">As needed</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lifestyle-recommendations">
+                    <h4>Lifestyle Recommendations</h4>
+                    <div class="recommendation-grid">
+                        <div class="recommendation-item">
+                            <div class="rec-icon">💧</div>
+                            <div class="rec-content">
+                                <span class="rec-title">Stay Hydrated</span>
+                                <span class="rec-desc">Drink 8-10 glasses of water daily</span>
+                            </div>
+                        </div>
+                        <div class="recommendation-item">
+                            <div class="rec-icon">😴</div>
+                            <div class="rec-content">
+                                <span class="rec-title">Adequate Rest</span>
+                                <span class="rec-desc">Get 7-9 hours of quality sleep</span>
+                            </div>
+                        </div>
+                        <div class="recommendation-item">
+                            <div class="rec-icon">🏃‍♂️</div>
+                            <div class="rec-content">
+                                <span class="rec-title">Light Exercise</span>
+                                <span class="rec-desc">Gentle walking or stretching</span>
+                            </div>
+                        </div>
+                        <div class="recommendation-item">
+                            <div class="rec-icon">🥗</div>
+                            <div class="rec-content">
+                                <span class="rec-title">Balanced Diet</span>
+                                <span class="rec-desc">Focus on fruits, vegetables, and lean proteins</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="medical-attention-warning">
+                    <div class="warning-card">
+                        <div class="warning-icon">⚠️</div>
+                        <div class="warning-content">
+                            <h5>When to Seek Medical Attention</h5>
+                            <ul class="warning-list">
+                                <li>Symptoms worsen or persist beyond 7 days</li>
+                                <li>Difficulty breathing or chest pain</li>
+                                <li>High fever (above 101.3°F/38.5°C)</li>
+                                <li>Severe headache or neck stiffness</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="monitoring-suggestions">
+                    <h4>Monitoring Checklist</h4>
+                    <div class="monitoring-list">
+                        <label class="monitoring-item">
+                            <input type="checkbox" checked>
+                            <span class="checkmark"></span>
+                            <span class="monitoring-text">Track symptom severity daily</span>
+                        </label>
+                        <label class="monitoring-item">
+                            <input type="checkbox">
+                            <span class="checkmark"></span>
+                            <span class="monitoring-text">Monitor temperature twice daily</span>
+                        </label>
+                        <label class="monitoring-item">
+                            <input type="checkbox">
+                            <span class="checkmark"></span>
+                            <span class="monitoring-text">Note any new symptoms</span>
+                        </label>
+                        <label class="monitoring-item">
+                            <input type="checkbox">
+                            <span class="checkmark"></span>
+                            <span class="monitoring-text">Record medication effectiveness</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. ADDITIONAL INSIGHTS CARD -->
+        <div class="analysis-card additional-insights">
+            <div class="card-header">
+                <div class="card-title">
+                    <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                    </svg>
+                    <h3>Additional Insights</h3>
+                </div>
+                <button class="expand-toggle" onclick="toggleCard(this)">
+                    <svg class="expand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="card-content">
+                <div class="related-health-info">
+                    <h4>Related Health Information</h4>
+                    <div class="info-cards">
+                        <div class="info-card">
+                            <div class="info-icon">🫀</div>
+                            <div class="info-content">
+                                <span class="info-title">Cardiovascular Health</span>
+                                <span class="info-desc">Your symptoms may be related to seasonal changes affecting circulation</span>
+                            </div>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-icon">🦠</div>
+                            <div class="info-content">
+                                <span class="info-title">Immune System</span>
+                                <span class="info-desc">Current symptoms suggest your immune system is actively responding</span>
+                            </div>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-icon">🧘‍♀️</div>
+                            <div class="info-content">
+                                <span class="info-title">Stress Management</span>
+                                <span class="info-desc">Consider stress reduction techniques to support recovery</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="prevention-tips">
+                    <h4>Prevention Tips</h4>
+                    <div class="tips-list">
+                        <div class="tip-item tip-highlight">
+                            <div class="tip-icon">✅</div>
+                            <div class="tip-content">
+                                <span class="tip-title">Hand Hygiene</span>
+                                <span class="tip-desc">Wash hands frequently to prevent viral spread</span>
+                            </div>
+                        </div>
+                        <div class="tip-item tip-highlight">
+                            <div class="tip-icon">✅</div>
+                            <div class="tip-content">
+                                <span class="tip-title">Avoid Triggers</span>
+                                <span class="tip-desc">Stay away from known allergens and irritants</span>
+                            </div>
+                        </div>
+                        <div class="tip-item tip-highlight">
+                            <div class="tip-icon">✅</div>
+                            <div class="tip-content">
+                                <span class="tip-title">Boost Immunity</span>
+                                <span class="tip-desc">Eat vitamin-rich foods and maintain regular sleep</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="educational-resources">
+                    <h4>Educational Resources</h4>
+                    <div class="resource-links">
+                        <a href="#" class="resource-link">
+                            <div class="resource-icon">📚</div>
+                            <div class="resource-content">
+                                <span class="resource-title">Understanding Respiratory Health</span>
+                                <span class="resource-desc">Comprehensive guide to lung and breathing health</span>
+                            </div>
+                        </a>
+                        <a href="#" class="resource-link">
+                            <div class="resource-icon">🎥</div>
+                            <div class="resource-content">
+                                <span class="resource-title">Allergy Management Video</span>
+                                <span class="resource-desc">Expert tips for managing seasonal allergies</span>
+                            </div>
+                        </a>
+                        <a href="#" class="resource-link">
+                            <div class="resource-icon">📖</div>
+                            <div class="resource-content">
+                                <span class="resource-title">Stress and Health Connection</span>
+                                <span class="resource-desc">How stress affects your physical well-being</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="follow-up-timeline">
+                    <h4>Suggested Follow-up Timeline</h4>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-marker">1</div>
+                            <div class="timeline-content">
+                                <span class="timeline-title">3-5 Days</span>
+                                <span class="timeline-desc">Monitor symptom progression and effectiveness of self-care</span>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-marker">2</div>
+                            <div class="timeline-content">
+                                <span class="timeline-title">1 Week</span>
+                                <span class="timeline-desc">Schedule follow-up assessment if symptoms persist</span>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-marker">3</div>
+                            <div class="timeline-content">
+                                <span class="timeline-title">2 Weeks</span>
+                                <span class="timeline-desc">Consider professional medical consultation if needed</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTTOM SECTION: INTERACTIVE TOOLS + EXPORT OPTIONS -->
+    <div class="interactive-tools">
+        <!-- Interactive Elements -->
+        <div class="tools-section">
+            <h3>Interactive Tools</h3>
+            <div class="tools-grid">
+                <div class="tool-item">
+                    <button class="tool-btn" onclick="toggleSimpleTerms()">
+                        <svg class="tool-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                        </svg>
+                        <span>Explain in Simple Terms</span>
+                    </button>
+                </div>
+                <div class="tool-item">
+                    <button class="tool-btn" onclick="showFAQ()">
+                        <svg class="tool-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span>Related Questions</span>
+                    </button>
+                </div>
+                <div class="tool-item">
+                    <button class="tool-btn" onclick="scheduleAppointment()">
+                        <svg class="tool-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                        <span>Schedule Consultation</span>
+                    </button>
+                </div>
+                <div class="tool-item">
+                    <button class="tool-btn" onclick="requestSecondOpinion()">
+                        <svg class="tool-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span>Request Second Opinion</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Export Options -->
+        <div class="export-section">
+            <h3>Export Options</h3>
+            <div class="export-grid">
+                <button class="export-btn" onclick="generatePDF()">
+                    <svg class="export-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    <div class="export-content">
+                        <span class="export-title">Generate PDF Report</span>
+                        <span class="export-desc">Download comprehensive report</span>
+                    </div>
+                </button>
+                <button class="export-btn" onclick="sendEmail()">
+                    <svg class="export-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
+                    <div class="export-content">
+                        <span class="export-title">Send via Email</span>
+                        <span class="export-desc">Email report to healthcare provider</span>
+                    </div>
+                </button>
+                <button class="export-btn" onclick="createShareLink()">
+                    <svg class="export-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                    </svg>
+                    <div class="export-content">
+                        <span class="export-title">Secure Share Link</span>
+                        <span class="export-desc">Create encrypted sharing link</span>
+                    </div>
+                </button>
+                <button class="export-btn" onclick="addToHealthRecord()">
+                    <svg class="export-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    <div class="export-content">
+                        <span class="export-title">Add to Health Record</span>
+                        <span class="export-desc">Save to personal health record</span>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Simple Terms Modal -->
+<div id="simpleTermsModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Simple Terms Explanation</h3>
+            <button class="modal-close" onclick="closeModal('simpleTermsModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="simple-explanation">
+                <h4>What this means in simple terms:</h4>
+                <ul>
+                    <li><strong>Respiratory Issues:</strong> You're having some trouble with breathing or your lungs</li>
+                    <li><strong>Muscle Fatigue:</strong> Your muscles feel tired and weak</li>
+                    <li><strong>Cognitive Changes:</strong> You might be having trouble thinking clearly or remembering things</li>
+                </ul>
+                <p><strong>Overall:</strong> You're showing signs of a common viral infection that should improve with rest and proper care.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FAQ Modal -->
+<div id="faqModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Frequently Asked Questions</h3>
+            <button class="modal-close" onclick="closeModal('faqModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="faq-list">
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <span>How accurate is this assessment?</span>
+                        <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>This AI assessment is based on your reported symptoms and provides preliminary insights. It should not replace professional medical diagnosis.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <span>When should I see a doctor?</span>
+                        <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Seek medical attention if symptoms worsen, persist beyond 7 days, or if you experience severe symptoms like difficulty breathing or high fever.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Can I trust these recommendations?</span>
+                        <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>These are general health recommendations based on your symptoms. Always consult with healthcare professionals for personalized medical advice.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="/static/js/assessment-results.js"></script>
+<script src="/static/js/results-interface.js"></script>
+<script src="/static/js/results-interactions.js"></script>
+{% endblock %}

@@ -1,0 +1,247 @@
+/* Features Grid Styles */
+.features-section {
+  padding: var(--space-16) 0;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+}
+
+.features-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-4);
+}
+
+.features-header {
+  text-align: center;
+  margin-bottom: var(--space-12);
+}
+
+.features-title {
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--space-4);
+  line-height: 1.2;
+}
+
+.features-subtitle {
+  font-size: var(--text-lg);
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* Features Grid */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-6);
+  margin-bottom: var(--space-8);
+}
+
+/* Feature Card */
+.feature-card {
+  background: white;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--medical-gradient-primary);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+  border-color: var(--primary-blue-light);
+}
+
+.feature-card:hover::before {
+  transform: scaleX(1);
+}
+
+/* Feature Icon */
+.feature-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto var(--space-4);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.feature-card:hover .feature-icon {
+  transform: scale(1.1);
+}
+
+.feature-icon svg {
+  width: 24px;
+  height: 24px;
+  color: white;
+}
+
+/* Icon Colors */
+.feature-icon.diagnosis {
+  background: var(--medical-gradient-primary);
+}
+
+.feature-icon.tracking {
+  background: var(--medical-gradient-success);
+}
+
+.feature-icon.analysis {
+  background: var(--medical-gradient-info);
+}
+
+.feature-icon.reminders {
+  background: var(--medical-gradient-warning);
+}
+
+.feature-icon.voice {
+  background: var(--medical-gradient-purple);
+}
+
+.feature-icon.emergency {
+  background: var(--medical-gradient-danger);
+}
+
+/* Feature Content */
+.feature-title {
+  font-size: var(--text-xl);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--space-3);
+  line-height: 1.3;
+}
+
+.feature-description {
+  font-size: var(--text-base);
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* Loading State */
+.feature-card.loading {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.feature-card.loading .feature-icon {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-5);
+  }
+  
+  .features-title {
+    font-size: var(--text-2xl);
+  }
+  
+  .feature-card {
+    padding: var(--space-5);
+  }
+}
+
+@media (max-width: 640px) {
+  .features-section {
+    padding: var(--space-12) 0;
+  }
+  
+  .features-container {
+    padding: 0 var(--space-3);
+  }
+  
+  .features-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+  
+  .features-header {
+    margin-bottom: var(--space-8);
+  }
+  
+  .features-title {
+    font-size: var(--text-xl);
+  }
+  
+  .features-subtitle {
+    font-size: var(--text-base);
+  }
+  
+  .feature-card {
+    padding: var(--space-4);
+  }
+  
+  .feature-icon {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .feature-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .feature-title {
+    font-size: var(--text-lg);
+  }
+  
+  .feature-description {
+    font-size: var(--text-sm);
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .feature-card,
+  .feature-icon {
+    transition: none;
+  }
+  
+  .feature-card:hover {
+    transform: none;
+  }
+  
+  .feature-card:hover .feature-icon {
+    transform: none;
+  }
+}
+
+/* Focus States */
+.feature-card:focus {
+  outline: 2px solid var(--primary-blue);
+  outline-offset: 2px;
+}
+
+.feature-card:focus:not(:focus-visible) {
+  outline: none;
+}

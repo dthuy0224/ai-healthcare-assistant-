@@ -1,0 +1,671 @@
+/* Registration Page Specific Styles */
+
+/* Registration Container */
+.registration-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Registration Card - Wider for multi-step form */
+.registration-card {
+  background: white;
+  border-radius: var(--radius-xl);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+  padding: var(--space-8);
+  width: 100%;
+  max-width: 600px;
+  position: relative;
+  z-index: 10;
+  border: 1px solid var(--border-light);
+}
+
+/* Registration Header */
+.registration-header {
+  text-align: center;
+  margin-bottom: var(--space-6);
+}
+
+.registration-title {
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
+  line-height: 1.2;
+}
+
+.registration-subtitle {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: 1.5;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+/* Progress Bar */
+.progress-container {
+  margin-bottom: var(--space-8);
+}
+
+.progress-bar {
+  width: 100%;
+  height: 4px;
+  background: var(--border-light);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin-bottom: var(--space-4);
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--medical-gradient-primary);
+  border-radius: var(--radius-full);
+  transition: width 0.3s ease;
+  width: 33.33%; /* Start at step 1 */
+}
+
+.progress-steps {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 1;
+  position: relative;
+}
+
+.step-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--border-light);
+  color: var(--text-tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.progress-step.active .step-circle {
+  background: var(--primary-blue);
+  color: white;
+}
+
+.progress-step.completed .step-circle {
+  background: var(--success);
+  color: white;
+}
+
+.step-label {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  font-weight: 500;
+  text-align: center;
+  transition: color 0.3s ease;
+}
+
+.progress-step.active .step-label {
+  color: var(--primary-blue);
+}
+
+.progress-step.completed .step-label {
+  color: var(--success);
+}
+
+/* Multi-Step Form */
+.registration-form {
+  position: relative;
+}
+
+.form-step {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+.form-step.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Step Header */
+.step-header {
+  text-align: center;
+  margin-bottom: var(--space-6);
+}
+
+.step-title {
+  font-size: var(--text-xl);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.step-description {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: 1.5;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+/* Form Grid */
+.form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+/* Enhanced Form Inputs */
+.form-select {
+  width: 100%;
+  padding: var(--space-3) var(--space-10) var(--space-3) var(--space-12);
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-md);
+  font-size: var(--text-base);
+  color: var(--text-primary);
+  background: white;
+  transition: all 0.2s ease;
+  outline: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right var(--space-3) center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+}
+
+.form-select:focus {
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.form-textarea {
+  width: 100%;
+  padding: var(--space-3) var(--space-3) var(--space-3) var(--space-12);
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-md);
+  font-size: var(--text-base);
+  color: var(--text-primary);
+  background: white;
+  transition: all 0.2s ease;
+  outline: none;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.form-textarea::placeholder {
+  color: var(--text-tertiary);
+  opacity: 0.8;
+  font-size: var(--text-sm);
+}
+
+.form-textarea:focus {
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Password Strength Indicator */
+.password-strength {
+  margin-top: var(--space-2);
+}
+
+.strength-bar {
+  width: 100%;
+  height: 4px;
+  background: var(--border-light);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin-bottom: var(--space-1);
+}
+
+.strength-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: all 0.3s ease;
+  width: 0%;
+}
+
+.strength-fill.weak {
+  background: var(--danger);
+  width: 25%;
+}
+
+.strength-fill.fair {
+  background: var(--warning);
+  width: 50%;
+}
+
+.strength-fill.good {
+  background: var(--primary-blue);
+  width: 75%;
+}
+
+.strength-fill.strong {
+  background: var(--success);
+  width: 100%;
+}
+
+.strength-text {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  font-weight: 500;
+}
+
+.strength-text.weak {
+  color: var(--danger);
+}
+
+.strength-text.fair {
+  color: var(--warning);
+}
+
+.strength-text.good {
+  color: var(--primary-blue);
+}
+
+.strength-text.strong {
+  color: var(--success);
+}
+
+/* Radio Group */
+.radio-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+.radio-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  cursor: pointer;
+  padding: var(--space-4);
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-md);
+  transition: all 0.2s ease;
+  background: white;
+  position: relative;
+}
+
+.radio-wrapper:hover {
+  border-color: var(--primary-blue);
+  background: rgba(37, 99, 235, 0.02);
+}
+
+.radio-wrapper input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.radio-mark {
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--border-light);
+  border-radius: 50%;
+  background: white;
+  transition: all 0.2s ease;
+  position: relative;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.radio-mark::after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--primary-blue);
+  opacity: 0;
+  transform: scale(0);
+  transition: all 0.2s ease;
+}
+
+.radio-wrapper input[type="radio"]:checked + .radio-mark {
+  border-color: var(--primary-blue);
+  background: rgba(37, 99, 235, 0.1);
+}
+
+.radio-wrapper input[type="radio"]:checked + .radio-mark::after {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.radio-wrapper input[type="radio"]:checked {
+  border-color: var(--primary-blue);
+  background: rgba(37, 99, 235, 0.05);
+}
+
+.radio-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.radio-text {
+  font-size: var(--text-base);
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.radio-description {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* Checkbox Group */
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.checkbox-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.checkbox-description {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* Emergency Contact Group */
+.emergency-contact-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  background: var(--bg-light);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
+}
+
+/* Terms Group */
+.terms-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--bg-light);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
+}
+
+.terms-group a {
+  color: var(--primary-blue);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.terms-group a:hover {
+  text-decoration: underline;
+}
+
+/* Form Navigation */
+.form-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-4);
+  margin-top: var(--space-8);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--border-light);
+}
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-md);
+  font-size: var(--text-base);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  outline: none;
+}
+
+.nav-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.prev-btn {
+  background: white;
+  color: var(--text-secondary);
+  border: 2px solid var(--border-light);
+}
+
+.prev-btn:hover {
+  background: var(--bg-light);
+  border-color: var(--primary-blue);
+  color: var(--primary-blue);
+}
+
+.next-btn {
+  background: var(--medical-gradient-primary);
+  color: white;
+  border: 2px solid transparent;
+}
+
+.next-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
+}
+
+.submit-btn {
+  background: var(--medical-gradient-success);
+  color: white;
+  border: 2px solid transparent;
+  position: relative;
+}
+
+.submit-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+}
+
+.submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Registration Footer */
+.registration-footer {
+  text-align: center;
+  margin-top: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border-light);
+}
+
+.registration-footer p {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .registration-container {
+    padding: var(--space-3);
+  }
+  
+  .registration-card {
+    padding: var(--space-6);
+    max-width: 100%;
+    margin: var(--space-4) 0;
+  }
+  
+  .registration-title {
+    font-size: var(--text-xl);
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+  
+  .progress-steps {
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  
+  .progress-step {
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+  }
+  
+  .step-circle {
+    width: 28px;
+    height: 28px;
+    font-size: var(--text-xs);
+  }
+  
+  .step-label {
+    text-align: left;
+    font-size: var(--text-sm);
+  }
+  
+  .form-navigation {
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+  
+  .nav-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  /* Mobile Radio Group */
+  .radio-group {
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+  }
+  
+  .radio-wrapper {
+    padding: var(--space-3);
+  }
+  
+  .radio-mark {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .radio-mark::after {
+    width: 8px;
+    height: 8px;
+  }
+  
+  .checkbox-group {
+    gap: var(--space-2);
+  }
+  
+  .checkbox-wrapper {
+    padding: var(--space-2);
+  }
+}
+
+@media (max-width: 640px) {
+  .healthcare-logo {
+    width: 56px;
+    height: 56px;
+  }
+  
+  .healthcare-logo .medical-cross,
+  .healthcare-logo .ai-circuit {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .emergency-contact-group,
+  .terms-group {
+    padding: var(--space-3);
+  }
+  
+  .floating-element {
+    font-size: 1.5rem;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .form-step,
+  .progress-fill,
+  .step-circle,
+  .nav-btn,
+  .floating-element {
+    animation: none;
+    transition: none;
+  }
+  
+  .nav-btn:hover {
+    transform: none;
+  }
+}
+
+/* Focus States for Accessibility */
+.nav-btn:focus,
+.form-select:focus,
+.form-textarea:focus {
+  outline: 2px solid var(--primary-blue);
+  outline-offset: 2px;
+}
+
+.radio-wrapper:focus-within .radio-mark {
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.checkbox-wrapper:focus-within .checkmark {
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Enhanced Background Pattern */
+.auth-bg-pattern .floating-element.element-5 {
+  top: 15%;
+  left: 80%;
+  animation-delay: -3s;
+}
+
+.auth-bg-pattern .floating-element.element-6 {
+  bottom: 30%;
+  right: 80%;
+  animation-delay: -5s;
+}

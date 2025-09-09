@@ -1,0 +1,436 @@
+/* AI Health Care Assistant - Dashboard Styles */
+
+/* Dashboard Header */
+.dashboard-header {
+  position: relative;
+  overflow: hidden;
+}
+
+.dashboard-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 30% 70%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+}
+
+/* Health Score Display */
+.health-score {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto;
+}
+
+.health-score-circle {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: conic-gradient(
+    var(--success) 0% 75%,
+    var(--gray-200) 75% 100%
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.health-score-circle::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  border-radius: 50%;
+  background: white;
+}
+
+.health-score-number {
+  position: relative;
+  z-index: 1;
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  color: var(--primary-blue);
+}
+
+.health-score-label {
+  position: relative;
+  z-index: 1;
+  font-size: var(--text-sm);
+  color: var(--gray-600);
+  margin-top: 4px;
+}
+
+/* Vital Signs Cards */
+.vital-sign-card {
+  background: linear-gradient(135deg, var(--primary-blue) 0%, #3b82f6 100%);
+  color: white;
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.vital-sign-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+  animation: pulse 4s ease-in-out infinite;
+}
+
+.vital-sign-card .vital-icon {
+  font-size: 2.5rem;
+  margin-bottom: var(--space-4);
+  position: relative;
+  z-index: 1;
+}
+
+.vital-sign-card .vital-value {
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  margin-bottom: var(--space-2);
+  position: relative;
+  z-index: 1;
+}
+
+.vital-sign-card .vital-label {
+  font-size: var(--text-sm);
+  opacity: 0.9;
+  position: relative;
+  z-index: 1;
+}
+
+.vital-sign-card .severity-badge {
+  position: relative;
+  z-index: 1;
+  margin-top: var(--space-3);
+}
+
+/* Activity Timeline */
+.activity-item {
+  padding: var(--space-4);
+  border-radius: var(--radius);
+  border: 1px solid var(--gray-200);
+  transition: all var(--transition-fast);
+}
+
+.activity-item:hover {
+  box-shadow: var(--shadow-sm);
+  border-color: var(--gray-300);
+}
+
+.activity-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.activity-content {
+  flex: 1;
+}
+
+.activity-title {
+  font-weight: 600;
+  color: var(--gray-900);
+  margin-bottom: var(--space-1);
+}
+
+.activity-description {
+  color: var(--gray-600);
+  font-size: var(--text-sm);
+  margin-bottom: var(--space-2);
+}
+
+.activity-time {
+  color: var(--gray-500);
+  font-size: var(--text-xs);
+}
+
+/* Medication Tracker */
+.medication-item {
+  padding: var(--space-4);
+  border-radius: var(--radius);
+  border: 1px solid var(--gray-200);
+  transition: all var(--transition-fast);
+}
+
+.medication-item:hover {
+  box-shadow: var(--shadow-sm);
+}
+
+.medication-status-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.medication-info {
+  flex: 1;
+}
+
+.medication-name {
+  font-weight: 600;
+  color: var(--gray-900);
+  margin-bottom: var(--space-1);
+}
+
+.medication-details {
+  color: var(--gray-600);
+  font-size: var(--text-sm);
+}
+
+.medication-status {
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+
+/* Symptom Trends */
+.symptom-chart {
+  background-color: var(--gray-100);
+  border-radius: var(--radius);
+  padding: var(--space-8);
+  text-align: center;
+  margin-bottom: var(--space-6);
+}
+
+.chart-placeholder {
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(135deg, var(--gray-200) 0%, var(--gray-300) 100%);
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gray-500);
+}
+
+.trend-indicators {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+
+.trend-item {
+  text-align: center;
+  padding: var(--space-4);
+  background-color: white;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.trend-icon {
+  font-size: var(--text-2xl);
+  margin-bottom: var(--space-2);
+}
+
+.trend-value {
+  font-size: var(--text-xl);
+  font-weight: 600;
+  color: var(--gray-900);
+  margin-bottom: var(--space-1);
+}
+
+.trend-label {
+  color: var(--gray-600);
+  font-size: var(--text-sm);
+}
+
+/* AI Insights */
+.ai-insight-card {
+  background: linear-gradient(135deg, var(--success) 0%, #10b981 100%);
+  color: white;
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  position: relative;
+  overflow: hidden;
+}
+
+.ai-insight-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+}
+
+.ai-insight-title {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  margin-bottom: var(--space-2);
+  position: relative;
+  z-index: 1;
+}
+
+.ai-insight-content {
+  position: relative;
+  z-index: 1;
+  opacity: 0.95;
+}
+
+/* Emergency Section */
+.emergency-card {
+  border: 2px solid var(--danger);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, rgba(239, 68, 68, 0.1) 100%);
+}
+
+.emergency-title {
+  color: var(--danger);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  margin-bottom: var(--space-4);
+}
+
+.emergency-button {
+  width: 100%;
+  background: linear-gradient(135deg, var(--danger) 0%, #dc2626 100%);
+  color: white;
+  border: none;
+  padding: var(--space-4) var(--space-6);
+  border-radius: var(--radius);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  margin-bottom: var(--space-4);
+}
+
+.emergency-button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.emergency-status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.emergency-status-icon {
+  width: 16px;
+  height: 16px;
+  background-color: var(--success);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.emergency-status-text {
+  color: var(--gray-700);
+  font-size: var(--text-sm);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .dashboard-header {
+    padding: var(--space-6) 0;
+  }
+
+  .health-score {
+    width: 100px;
+    height: 100px;
+  }
+
+  .health-score-circle {
+    width: 100px;
+    height: 100px;
+  }
+
+  .vital-sign-card {
+    padding: var(--space-4);
+  }
+
+  .vital-sign-card .vital-icon {
+    font-size: 2rem;
+  }
+
+  .vital-sign-card .vital-value {
+    font-size: var(--text-2xl);
+  }
+
+  .trend-indicators {
+    grid-template-columns: 1fr;
+  }
+
+  .emergency-button {
+    font-size: var(--text-base);
+    padding: var(--space-3) var(--space-4);
+  }
+}
+
+/* Animation */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+}
+
+/* Loading States */
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 24px;
+  height: 24px;
+  margin: -12px 0 0 -12px;
+  border: 2px solid var(--gray-200);
+  border-top-color: var(--primary-blue);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Print Styles */
+@media print {
+  .dashboard-header {
+    background: var(--primary-blue) !important;
+    color: white !important;
+  }
+
+  .ai-insight-card,
+  .vital-sign-card {
+    background: white !important;
+    color: black !important;
+    box-shadow: none;
+    border: 1px solid #ddd;
+  }
+
+  .emergency-card {
+    border-color: var(--danger) !important;
+  }
+}

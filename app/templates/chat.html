@@ -1,0 +1,696 @@
+{% extends "base.html" %}
+
+{% block title %}AI Chat - HealthCare Assistant{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/chat-interface.css">
+<link rel="stylesheet" href="/static/css/chat-components.css">
+{% endblock %}
+
+{% block content %}
+<div class="chat-wrapper">
+    <!-- Chat Header -->
+    <div class="chat-header">
+        <div class="chat-header-left">
+            <div class="ai-avatar">
+                <div class="avatar-image">
+                    <div class="avatar-icon">👨‍⚕️</div>
+                    <div class="status-indicator online"></div>
+                </div>
+            </div>
+            <div class="ai-info">
+                <h2 class="ai-name">Dr. AI Assistant</h2>
+                <div class="ai-status">
+                    <span class="status-text">Online</span>
+                    <span class="status-dot"></span>
+                    <span class="typing-status" id="typing-status">Ready to help</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chat-header-right">
+            <div class="chat-actions">
+                <button class="chat-action-btn" id="search-btn" title="Search messages">
+                    <span class="btn-icon">🔍</span>
+                </button>
+                <button class="chat-action-btn" id="bookmark-btn" title="Bookmark conversation">
+                    <span class="btn-icon">🔖</span>
+                </button>
+                <button class="chat-action-btn" id="settings-btn" title="Chat settings">
+                    <span class="btn-icon">⚙️</span>
+                </button>
+                <div class="chat-menu-dropdown" id="chat-menu">
+                    <button class="menu-item" id="clear-history-btn">
+                        <span class="menu-icon">🗑️</span>
+                        <span>Clear History</span>
+                    </button>
+                    <button class="menu-item" id="export-chat-btn">
+                        <span class="menu-icon">📤</span>
+                        <span>Export Chat</span>
+                    </button>
+                    <button class="menu-item" id="high-contrast-btn">
+                        <span class="menu-icon">🌓</span>
+                        <span>High Contrast</span>
+                    </button>
+                    <button class="menu-item" id="translate-btn">
+                        <span class="menu-icon">🌐</span>
+                        <span>Translation</span>
+                    </button>
+                </div>
+            </div>
+            
+            <button class="emergency-btn" id="emergency-btn">
+                <span class="emergency-icon">🚨</span>
+                <span class="emergency-text">Emergency</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Chat Messages Container -->
+    <div class="chat-container">
+        <div class="chat-messages" id="chat-messages">
+            <!-- Welcome Message -->
+            <div class="message ai-message welcome-message">
+                <div class="message-avatar">
+                    <div class="avatar-icon">👨‍⚕️</div>
+                </div>
+                <div class="message-content">
+                    <div class="message-bubble">
+                        <div class="message-text">
+                            <h3>Welcome to your AI Health Assistant! 👋</h3>
+                            <p>I'm here to help you with your health questions and concerns. You can:</p>
+                            <ul>
+                                <li>Ask about <span class="medical-term" data-term="symptoms">symptoms</span> or <span class="medical-term" data-term="conditions">health conditions</span></li>
+                                <li>Get personalized health recommendations</li>
+                                <li>Schedule appointments or consultations</li>
+                                <li>Upload medical documents for analysis</li>
+                                <li>Use voice messages for easier communication</li>
+                                <li>Get real-time translations in multiple languages</li>
+                            </ul>
+                            <p><strong>How can I help you today?</strong></p>
+                        </div>
+                    </div>
+                    <div class="message-footer">
+                        <span class="message-time">Just now</span>
+                        <div class="message-status">
+                            <span class="status-icon delivered">✓✓</span>
+                        </div>
+                        <div class="message-actions">
+                            <button class="message-action" title="Helpful" data-action="like">👍</button>
+                            <button class="message-action" title="Not helpful" data-action="dislike">👎</button>
+                            <button class="message-action" title="Bookmark" data-action="bookmark">🔖</button>
+                            <button class="message-action" title="Copy" data-action="copy">📋</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Start Options -->
+            <div class="quick-start-section">
+                <div class="quick-start-title">Quick Start Options:</div>
+                <div class="quick-start-grid">
+                    <button class="quick-start-btn" data-message="I'm experiencing headaches">
+                        <div class="quick-icon">🤕</div>
+                        <span>Headache symptoms</span>
+                    </button>
+                    <button class="quick-start-btn" data-message="I need help with medication">
+                        <div class="quick-icon">💊</div>
+                        <span>Medication help</span>
+                    </button>
+                    <button class="quick-start-btn" data-message="Schedule a checkup">
+                        <div class="quick-icon">📅</div>
+                        <span>Schedule appointment</span>
+                    </button>
+                    <button class="quick-start-btn" data-message="Analyze my lab results">
+                        <div class="quick-icon">📋</div>
+                        <span>Lab results</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Example User Message -->
+            <div class="message user-message" style="display: none;" id="example-user-message">
+                <div class="message-content">
+                    <div class="message-bubble">
+                        <div class="message-text">
+                            <p>I've been having persistent headaches for the past 3 days. They're moderate in intensity and seem to get worse in the afternoon. Should I be concerned?</p>
+                        </div>
+                    </div>
+                    <div class="message-footer">
+                        <span class="message-time">2 minutes ago</span>
+                        <div class="message-status">
+                            <span class="status-icon read">✓✓</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="message-avatar">
+                    <div class="avatar-icon user">👤</div>
+                </div>
+            </div>
+
+            <!-- Example AI Medical Insight Card -->
+            <div class="message ai-message" style="display: none;" id="example-ai-insight">
+                <div class="message-avatar">
+                    <div class="avatar-icon">👨‍⚕️</div>
+                </div>
+                <div class="message-content">
+                    <div class="medical-insight-card">
+                        <div class="insight-header">
+                            <div class="insight-icon">🔍</div>
+                            <div class="insight-info">
+                                <h4 class="insight-title">Headache Analysis</h4>
+                                <div class="severity-indicator medium">
+                                    <span class="severity-dot"></span>
+                                    <span class="severity-text">Medium Priority</span>
+                                </div>
+                            </div>
+                            <div class="confidence-score">
+                                <span class="confidence-value">85%</span>
+                                <span class="confidence-label">Confidence</span>
+                            </div>
+                        </div>
+                        
+                        <div class="insight-content">
+                            <div class="diagnosis-section">
+                                <h5>Possible Conditions:</h5>
+                            <div class="condition-list">
+                                <div class="condition-item">
+                                    <span class="condition-name medical-term" data-term="tension-headache">Tension Headache</span>
+                                    <span class="condition-probability">75%</span>
+                                </div>
+                                <div class="condition-item">
+                                    <span class="condition-name medical-term" data-term="stress-headache">Stress-related Headache</span>
+                                    <span class="condition-probability">60%</span>
+                                </div>
+                            </div>
+                            </div>
+                            
+                            <div class="recommendations-section">
+                                <h5>Recommendations:</h5>
+                                <ul class="recommendation-list">
+                                    <li class="recommendation-item">
+                                        <span class="rec-icon">💧</span>
+                                        <span>Stay well hydrated (8+ glasses of water daily)</span>
+                                    </li>
+                                    <li class="recommendation-item">
+                                        <span class="rec-icon">😴</span>
+                                        <span>Ensure 7-9 hours of quality sleep</span>
+                                    </li>
+                                    <li class="recommendation-item">
+                                        <span class="rec-icon">🧘</span>
+                                        <span>Practice stress management techniques</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            
+                            <div class="warning-section">
+                                <div class="warning-item">
+                                    <span class="warning-icon">⚠️</span>
+                                    <span>Consult a doctor if headaches persist for more than a week or worsen significantly</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="insight-actions">
+                            <button class="insight-btn primary" data-action="schedule">
+                                <span class="btn-icon">📅</span>
+                                <span>Schedule Appointment</span>
+                            </button>
+                            <button class="insight-btn secondary" data-action="learn-more">
+                                <span class="btn-icon">📚</span>
+                                <span>Learn More</span>
+                            </button>
+                            <button class="insight-btn secondary" data-action="add-record">
+                                <span class="btn-icon">📋</span>
+                                <span>Add to Records</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="message-footer">
+                        <span class="message-time">Just now</span>
+                        <div class="message-status">
+                            <span class="status-icon delivered">✓✓</span>
+                        </div>
+                        <div class="message-actions">
+                            <button class="message-action" title="Helpful" data-action="like">👍</button>
+                            <button class="message-action" title="Not helpful" data-action="dislike">👎</button>
+                            <button class="message-action" title="Bookmark" data-action="bookmark">🔖</button>
+                            <button class="message-action" title="Share" data-action="share">📤</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Typing Indicator -->
+        <div class="typing-indicator" id="typing-indicator">
+            <div class="typing-avatar">
+                <div class="avatar-icon">👨‍⚕️</div>
+            </div>
+            <div class="typing-bubble">
+                <div class="typing-animation">
+                    <div class="medical-pulse">
+                        <div class="pulse-dot"></div>
+                        <div class="pulse-dot"></div>
+                        <div class="pulse-dot"></div>
+                    </div>
+                </div>
+                <div class="typing-text" id="typing-text">Dr. AI is analyzing your symptoms...</div>
+            </div>
+        </div>
+
+        <!-- Quick Replies -->
+        <div class="quick-replies" id="quick-replies">
+            <!-- Dynamic quick replies will be inserted here -->
+            <div class="quick-replies-content" id="quick-replies-content">
+                <!-- Example contextual quick replies -->
+                <div class="quick-replies-section" data-context="symptom-assessment">
+                    <div class="quick-replies-title">Rate your pain level:</div>
+                    <div class="severity-scale">
+                        <button class="severity-btn" data-value="1" title="Very mild">1</button>
+                        <button class="severity-btn" data-value="2" title="Mild">2</button>
+                        <button class="severity-btn" data-value="3" title="Mild to moderate">3</button>
+                        <button class="severity-btn" data-value="4" title="Moderate">4</button>
+                        <button class="severity-btn" data-value="5" title="Moderate">5</button>
+                        <button class="severity-btn medium" data-value="6" title="Moderate to severe">6</button>
+                        <button class="severity-btn medium" data-value="7" title="Severe">7</button>
+                        <button class="severity-btn high" data-value="8" title="Very severe">8</button>
+                        <button class="severity-btn high" data-value="9" title="Extremely severe">9</button>
+                        <button class="severity-btn high" data-value="10" title="Worst possible">10</button>
+                    </div>
+                </div>
+                
+                <div class="quick-replies-section" data-context="general">
+                    <div class="quick-replies-grid">
+                        <button class="quick-reply-btn" data-message="Tell me more about this">Tell me more</button>
+                        <button class="quick-reply-btn" data-message="What should I do?">What should I do?</button>
+                        <button class="quick-reply-btn" data-message="Is this serious?">Is this serious?</button>
+                        <button class="quick-reply-btn" data-message="Should I see a doctor?">See a doctor?</button>
+                        <button class="quick-reply-btn" data-message="Yes, continue">Yes</button>
+                        <button class="quick-reply-btn" data-message="No, that's not right">No</button>
+                        <button class="quick-reply-btn" data-message="Maybe, I'm not sure">Maybe</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Input Area -->
+    <div class="chat-input-area">
+        <!-- Attachment Preview -->
+        <div class="attachment-preview" id="attachment-preview">
+            <!-- Attachment previews will appear here -->
+            <!-- Example multimedia previews -->
+            <div class="attachment-item image-preview" data-type="image" style="display: none;">
+                <div class="attachment-icon">🖼️</div>
+                <div class="attachment-info">
+                    <span class="attachment-name">medical_report.jpg</span>
+                    <span class="attachment-size">2.3 MB</span>
+                </div>
+                <div class="attachment-actions">
+                    <button class="attachment-zoom" title="Zoom image">🔍</button>
+                    <button class="attachment-remove" title="Remove">✕</button>
+                </div>
+            </div>
+            
+            <div class="attachment-item document-preview" data-type="document" style="display: none;">
+                <div class="attachment-icon">📄</div>
+                <div class="attachment-info">
+                    <span class="attachment-name">lab_results.pdf</span>
+                    <span class="attachment-size">1.2 MB</span>
+                </div>
+                <div class="attachment-actions">
+                    <button class="attachment-preview-btn" title="Preview document">👁️</button>
+                    <button class="attachment-remove" title="Remove">✕</button>
+                </div>
+            </div>
+            
+            <div class="attachment-item voice-preview" data-type="voice" style="display: none;">
+                <div class="attachment-icon">🎤</div>
+                <div class="attachment-info">
+                    <span class="attachment-name">Voice Message</span>
+                    <span class="attachment-duration">0:45</span>
+                </div>
+                <div class="voice-waveform">
+                    <div class="waveform-bar" style="height: 20%"></div>
+                    <div class="waveform-bar" style="height: 60%"></div>
+                    <div class="waveform-bar" style="height: 40%"></div>
+                    <div class="waveform-bar" style="height: 80%"></div>
+                    <div class="waveform-bar" style="height: 30%"></div>
+                </div>
+                <div class="attachment-actions">
+                    <button class="voice-play-btn" title="Play voice message">▶️</button>
+                    <button class="attachment-remove" title="Remove">✕</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-input-container">
+            <div class="input-actions-left">
+                <button class="input-action-btn" id="attachment-btn" title="Attach file">
+                    <span class="btn-icon">📎</span>
+                    <input type="file" id="file-input" multiple accept="image/*,.pdf,.doc,.docx,.txt" hidden>
+                </button>
+                <button class="input-action-btn" id="camera-btn" title="Take photo">
+                    <span class="btn-icon">📷</span>
+                </button>
+                <button class="input-action-btn" id="voice-btn" title="Voice message" data-recording="false">
+                    <span class="btn-icon" id="voice-icon">🎤</span>
+                </button>
+            </div>
+
+            <div class="message-input-container">
+                <div class="input-wrapper">
+                    <textarea 
+                        id="message-input" 
+                        placeholder="Type your health question or concern here..."
+                        rows="1"
+                        maxlength="2000"
+                        aria-label="Message input"
+                    ></textarea>
+                    <div class="input-suggestions" id="input-suggestions">
+                        <!-- Dynamic suggestions will appear here -->
+                    </div>
+                </div>
+                <div class="input-footer">
+                    <div class="character-count">
+                        <span id="char-count">0</span>/2000
+                    </div>
+                    <div class="input-features">
+                        <button class="feature-btn" id="speech-to-text-btn" title="Speech to text" data-listening="false">
+                            <span class="btn-icon" id="speech-icon">🎙️</span>
+                            <span class="listening-indicator" id="listening-indicator">●</span>
+                        </button>
+                        <button class="feature-btn" id="translate-input-btn" title="Translate input">
+                            <span class="btn-icon">🌐</span>
+                        </button>
+                        <button class="feature-btn" id="emoji-btn" title="Add emoji">
+                            <span class="btn-icon">😊</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-actions-right">
+                <button class="send-btn" id="send-btn" disabled aria-label="Send message">
+                    <span class="send-icon" id="send-icon">➤</span>
+                    <div class="send-loading" id="send-loading">
+                        <div class="loading-spinner"></div>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Voice Recording Interface -->
+        <div class="voice-recording" id="voice-recording">
+            <div class="recording-visualization">
+                <div class="wave-container">
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                </div>
+            </div>
+            <div class="recording-info">
+                <span class="recording-time" id="recording-time">0:00</span>
+                <span class="recording-status">Recording... Speak now</span>
+            </div>
+            <div class="recording-actions">
+                <button class="recording-action cancel" id="cancel-recording">
+                    <span class="btn-icon">✕</span>
+                    <span>Cancel</span>
+                </button>
+                <button class="recording-action pause" id="pause-recording">
+                    <span class="btn-icon">⏸️</span>
+                    <span>Pause</span>
+                </button>
+                <button class="recording-action send" id="send-recording">
+                    <span class="btn-icon">➤</span>
+                    <span>Send</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Overlay -->
+    <div class="search-overlay" id="search-overlay">
+        <div class="search-container">
+            <div class="search-header">
+                <div class="search-input-wrapper">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="search-input" placeholder="Search messages..." aria-label="Search messages">
+                    <button class="search-clear" id="search-clear" title="Clear search">✕</button>
+                </div>
+                <button class="search-close" id="search-close" title="Close search">✕</button>
+            </div>
+            <div class="search-filters">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="text">Text</button>
+                <button class="filter-btn" data-filter="insights">Insights</button>
+                <button class="filter-btn" data-filter="attachments">Files</button>
+            </div>
+            <div class="search-results" id="search-results">
+                <div class="search-empty">
+                    <div class="empty-icon">🔍</div>
+                    <p>Start typing to search messages...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Emoji Picker -->
+    <div class="emoji-picker" id="emoji-picker">
+        <div class="emoji-categories">
+            <button class="emoji-category active" data-category="health">🏥</button>
+            <button class="emoji-category" data-category="symptoms">🤒</button>
+            <button class="emoji-category" data-category="emotions">😊</button>
+            <button class="emoji-category" data-category="body">👤</button>
+        </div>
+        <div class="emoji-grid" id="emoji-grid">
+            <!-- Dynamic emoji grid -->
+        </div>
+    </div>
+
+    <!-- Medical Term Tooltip -->
+    <div class="medical-tooltip" id="medical-tooltip">
+        <div class="tooltip-header">
+            <h4 class="tooltip-term"></h4>
+            <button class="tooltip-close">✕</button>
+        </div>
+        <div class="tooltip-content">
+            <div class="tooltip-definition"></div>
+            <div class="tooltip-actions">
+                <button class="tooltip-learn-more">Learn More</button>
+                <button class="tooltip-translate">Translate</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Zoom Modal -->
+    <div class="modal image-zoom-modal" id="image-zoom-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content image-zoom-content">
+            <div class="zoom-header">
+                <div class="zoom-controls">
+                    <button class="zoom-btn" id="zoom-out" title="Zoom out">➖</button>
+                    <span class="zoom-level">100%</span>
+                    <button class="zoom-btn" id="zoom-in" title="Zoom in">➕</button>
+                    <button class="zoom-btn" id="zoom-fit" title="Fit to screen">📐</button>
+                </div>
+                <button class="modal-close" id="zoom-close" title="Close">✕</button>
+            </div>
+            <div class="zoom-container">
+                <img class="zoomed-image" id="zoomed-image" src="" alt="Medical image">
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    
+    <!-- Emergency Modal -->
+    <div class="modal emergency-modal" id="emergency-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content emergency-content">
+            <div class="emergency-header">
+                <div class="emergency-icon">🚨</div>
+                <h2>Emergency Assistance</h2>
+                <p class="emergency-subtitle">Get immediate help for medical emergencies</p>
+            </div>
+            <div class="emergency-body">
+                <div class="emergency-options">
+                    <button class="emergency-option urgent" data-action="call-911">
+                        <div class="option-icon">📞</div>
+                        <div class="option-info">
+                            <h3>Call Emergency Services</h3>
+                            <p>Dial 911 for immediate medical emergency</p>
+                            <span class="option-shortcut">Call 911</span>
+                        </div>
+                    </button>
+                    <button class="emergency-option important" data-action="find-hospital">
+                        <div class="option-icon">🏥</div>
+                        <div class="option-info">
+                            <h3>Find Nearest Hospital</h3>
+                            <p>Locate emergency rooms and urgent care near you</p>
+                            <span class="option-shortcut">Get Directions</span>
+                        </div>
+                    </button>
+                    <button class="emergency-option general" data-action="poison-control">
+                        <div class="option-icon">☠️</div>
+                        <div class="option-info">
+                            <h3>Poison Control Center</h3>
+                            <p>1-800-222-1222 for poison emergencies</p>
+                            <span class="option-shortcut">Call Now</span>
+                        </div>
+                    </button>
+                    <button class="emergency-option general" data-action="mental-health">
+                        <div class="option-icon">🧠</div>
+                        <div class="option-info">
+                            <h3>Mental Health Crisis</h3>
+                            <p>988 Suicide & Crisis Lifeline</p>
+                            <span class="option-shortcut">Call 988</span>
+                        </div>
+                    </button>
+                </div>
+                <div class="emergency-disclaimer">
+                    <div class="disclaimer-icon">⚠️</div>
+                    <div class="disclaimer-text">
+                        <p><strong>Important:</strong> This AI assistant is not a substitute for professional medical care. In case of emergency, always contact emergency services immediately.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="emergency-footer">
+                <button class="btn secondary" id="emergency-close">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal settings-modal" id="settings-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Chat Settings</h3>
+                <button class="modal-close" aria-label="Close settings">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-section">
+                    <h4>Appearance</h4>
+                    <div class="setting-item">
+                        <label class="setting-label">
+                            <input type="checkbox" id="high-contrast-toggle">
+                            <span class="setting-text">High contrast mode</span>
+                            <span class="setting-description">Improve visibility with higher contrast colors</span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label class="setting-label">
+                            <input type="checkbox" id="large-text-toggle">
+                            <span class="setting-text">Large text</span>
+                            <span class="setting-description">Increase text size for better readability</span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label class="setting-label">
+                            <input type="checkbox" id="reduce-motion-toggle">
+                            <span class="setting-text">Reduce motion</span>
+                            <span class="setting-description">Minimize animations and transitions</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h4>Notifications</h4>
+                    <div class="setting-item">
+                        <label class="setting-label">
+                            <input type="checkbox" id="sound-notifications" checked>
+                            <span class="setting-text">Sound notifications</span>
+                            <span class="setting-description">Play sounds for new messages</span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label class="setting-label">
+                            <input type="checkbox" id="typing-sounds" checked>
+                            <span class="setting-text">Typing sounds</span>
+                            <span class="setting-description">Play sounds while typing</span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label class="setting-label">
+                            <input type="checkbox" id="desktop-notifications" checked>
+                            <span class="setting-text">Desktop notifications</span>
+                            <span class="setting-description">Show notifications outside the browser</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h4>Privacy & Data</h4>
+                    <div class="setting-item">
+                        <label class="setting-label">
+                            <input type="checkbox" id="save-history" checked>
+                            <span class="setting-text">Save chat history</span>
+                            <span class="setting-description">Keep your conversation history for future reference</span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label class="setting-label">
+                            <input type="checkbox" id="analytics" checked>
+                            <span class="setting-text">Help improve AI responses</span>
+                            <span class="setting-description">Share anonymous usage data to improve the AI</span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label class="setting-label">
+                            <input type="checkbox" id="offline-queue" checked>
+                            <span class="setting-text">Offline message queueing</span>
+                            <span class="setting-description">Queue messages when offline and send when reconnected</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h4>Language & Translation</h4>
+                    <div class="setting-item">
+                        <div class="setting-select">
+                            <label for="chat-language">Chat Language</label>
+                            <select id="chat-language">
+                                <option value="en">English</option>
+                                <option value="es">Español</option>
+                                <option value="fr">Français</option>
+                                <option value="de">Deutsch</option>
+                                <option value="zh">中文</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <label class="setting-label">
+                            <input type="checkbox" id="auto-translate">
+                            <span class="setting-text">Auto-translate messages</span>
+                            <span class="setting-description">Automatically translate messages to your preferred language</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn secondary" id="settings-reset">Reset to Defaults</button>
+                <button class="btn primary" id="settings-save">Save Settings</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/chat-interface.js"></script>
+<script src="/static/js/chat-interactions.js"></script>
+
+<!-- Offline Indicator -->
+<div class="offline-indicator" id="offline-indicator">
+    <div class="offline-icon">📶</div>
+    <span>You're offline. Messages will be sent when reconnected.</span>
+</div>
+{% endblock %}
